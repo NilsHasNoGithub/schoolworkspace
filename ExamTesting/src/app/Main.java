@@ -17,9 +17,6 @@ public class Main {
         ArrayList<Band> collected = new ArrayList<Band>();
         collected.add(bands[0]);
         dumpBandTrains(bands, collected);
-
-        int[] row= {1,2,3,4,5,2,1,1};
-        System.out.println(canSplit(row));
         
     }
 
