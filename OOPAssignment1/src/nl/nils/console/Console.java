@@ -22,8 +22,9 @@ import nl.nils.utilities.StringObject;
 import nl.nils.utilities.Utilities;
 
 public class Console implements Closeable {
-    /*
-     * A console UI By Nils Golembiewski
+    /**
+     * A console UI
+     * @author Nils Golembiewski
      */
     private final JFrame mainWindow;
     private volatile JTextArea printArea;
@@ -32,6 +33,8 @@ public class Console implements Closeable {
     private volatile int charLimit = 250000;
     private volatile String consoleText = "";
     private volatile boolean updateThreadRunning = true;
+    private String feedbackIndicatorFront = ">>";
+    private String feedbackIndicatorBack = "";
 
     /**
      * A more customizable console to use with console programs.
@@ -298,7 +301,7 @@ public class Console implements Closeable {
         userInputArea.setEditable(false);
         userInputArea.removeKeyListener(keyListener);
         if (giveFeedBack) {
-            linePrint(">>" + input.value + "<<");
+            linePrint(feedbackString(input.value));
         }
         return input.value;
 
@@ -315,11 +318,11 @@ public class Console implements Closeable {
         assert userInputArea != null;
         String answer = getInput(false);
         while (!Utilities.isInteger(answer)) {
-            print("Error: " + answer + " is not an integer, please provide different input...");
+            linePrint("Error: \"" + answer + "\" is not an integer, please provide different input...");
             answer = getInput(false);
         }
         if (giveFeedBack) {
-            linePrint(">>" + answer + "<<");
+            linePrint(feedbackString(answer));
         }
         return Integer.parseInt(answer);
     }
@@ -335,11 +338,11 @@ public class Console implements Closeable {
         assert userInputArea != null;
         String answer = getInput(false);
         while (!answer.toLowerCase().equals("y") && !answer.toLowerCase().equals("n")) {
-            linePrint("Error: " + answer + " does not match Y/y/N/n. Please provide different input");
+            linePrint("Error: \"" + answer + "\" does not match Y/y/N/n. Please provide different input");
             answer = getInput(false);
         }
         if (giveFeedBack) {
-            linePrint(">>" + answer + "<<");
+            linePrint(feedbackString(answer));
         }
         if (answer.toLowerCase().equals("y")) {
             return true;
@@ -358,11 +361,11 @@ public class Console implements Closeable {
         assert userInputArea != null;
         String answer = getInput(false);
         while (!Utilities.isDouble(answer)) {
-            print("Error: " + answer + " is not a double, please provide different input...");
+            linePrint("Error: \"" + answer + "\" is not a double, please provide different input...");
             answer = getInput(false);
         }
         if (giveFeedBack) {
-            linePrint(">>" + answer + "<<");
+            linePrint(feedbackString(answer));
         }
         return Double.parseDouble(answer);
 
@@ -445,6 +448,36 @@ public class Console implements Closeable {
         newLine();
         waitForKeyPress();
         delete(consoleText.length() - message.toString().length() - 1, consoleText.length() - 1);
+    }
+
+    /**
+     * converts feedback into a feedback string according to feedbackIndicator
+     * 
+     * @param feedback
+     * @return a feedback string for the console
+     */
+    private String feedbackString(String feedback) {
+        assert feedback != null;
+        return feedbackIndicatorFront+feedback+feedbackIndicatorBack;
+    }
+    /**
+     * Sets the string with which the user feedback is indicated default is ">>"
+     * @param feedbackIndicator
+     */
+    public void setFeedbackIndicator(String feedbackIndicator) {
+        assert feedbackIndicator != null;
+        this.feedbackIndicatorFront = feedbackIndicator;
+    }
+
+    /**
+     * Sets the string with which the user feedback is indicated default is ">>", ""
+     * @param feedbackIndicatorFront
+     * @param feedbackIndicatorBack
+     */
+    public void setFeedbackIndicator(String feedbackIndicatorFront, String feedbackIndicatorBack) {
+        assert feedbackIndicatorFront != null;
+        this.feedbackIndicatorFront = feedbackIndicatorFront;
+        this.feedbackIndicatorBack=feedbackIndicatorBack;
     }
 
     /**
