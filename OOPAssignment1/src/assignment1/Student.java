@@ -10,7 +10,7 @@ import java.util.Scanner;
  public class Student{
     private String firstName;
     private String familyName;
-    private final int STUDENT_NR;
+    public final int STUDENT_NR;
 
     public Student(int studentNr, String firstName,String familyName){
         this.firstName=firstName;
