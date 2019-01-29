@@ -24,7 +24,7 @@ public class Main {
     }
 
     private static void maintainGroup(Student[] students) {
-        int inputNr = -1;
+        int inputNr;
         do {
             console.linePrint("Student number and new name?");
             String input = console.getInput(true);

@@ -31,17 +31,18 @@ public class Console implements Closeable {
     private volatile long refreshTime = 50;
     private volatile int charLimit = 250000;
     private volatile String consoleText = "";
-    private volatile boolean updateThreadRunning=true;
+    private volatile boolean updateThreadRunning = true;
 
     /**
      * A more customizable console to use with console programs.
+     * 
      * @author Nils Golembiewski
      */
     public Console() {
         assert true;
-        mainWindow=new JFrame();
-        printArea=new JTextArea();
-        userInputArea=new JTextField();
+        mainWindow = new JFrame();
+        printArea = new JTextArea();
+        userInputArea = new JTextField();
         initializeWindow();
         updateCycle();
     }
@@ -61,7 +62,7 @@ public class Console implements Closeable {
             }
         });
         printArea.setEditable(false);
-        JScrollPane scrollPane= new JScrollPane(printArea);
+        JScrollPane scrollPane = new JScrollPane(printArea);
         printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         mainWindow.add(scrollPane, BorderLayout.CENTER);
         userInputArea.setEditable(false);
@@ -70,6 +71,7 @@ public class Console implements Closeable {
         mainWindow.add(userInputArea, BorderLayout.PAGE_END);
         mainWindow.setVisible(true);
     }
+
     /**
      * sets the size of the console window
      * 
@@ -77,18 +79,20 @@ public class Console implements Closeable {
      */
     public void setSize(Dimension dimension) {
         assert dimension != null : "dimension should be initialized";
-        assert dimension.width>=0:"dimesion width is less than 0";
-        assert dimension.height>=0:"dimension height is less than 0";
+        assert dimension.width >= 0 : "dimesion width is less than 0";
+        assert dimension.height >= 0 : "dimension height is less than 0";
         mainWindow.setSize(dimension);
     }
+
     /**
      * sets the size of the console window
+     * 
      * @param width
      * @param height
      */
-    public void setSize(int width, int height){
-        assert width>=0:"width is less than 0";
-        assert height>=0:"height is less than 0";
+    public void setSize(int width, int height) {
+        assert width >= 0 : "width is less than 0";
+        assert height >= 0 : "height is less than 0";
         mainWindow.setSize(width, height);
     }
 
@@ -96,21 +100,19 @@ public class Console implements Closeable {
      * Updates the print area in the console, this happens automatically
      */
     private void updateConsole() {
-        assert printArea!=null:"printArea is null";
-        assert consoleText !=null:"consoleText is null";
-        
-        if(!printArea.getText().equals(consoleText)){
-        	printArea.setText(consoleText);
+        assert printArea != null : "printArea is null";
+        assert consoleText != null : "consoleText is null";
+
+        if (!printArea.getText().equals(consoleText)) {
+            printArea.setText(consoleText);
             scrollToEnd();
         }
 
-        if (consoleText.length()>charLimit) {
+        if (consoleText.length() > charLimit) {
             consoleText = consoleText.substring(consoleText.length() - charLimit);
         }
-        
-        
+
     }
-    
 
     /**
      * Sets the resizability of the console
@@ -118,8 +120,8 @@ public class Console implements Closeable {
      * @param resizable When true, console window will be resizable else it will
      *                  not. (default: true);
      */
-    public void setResizable(boolean resizable){
-        assert mainWindow!=null:"mainWindow is null";
+    public void setResizable(boolean resizable) {
+        assert mainWindow != null : "mainWindow is null";
         mainWindow.setResizable(resizable);
     }
 
@@ -130,7 +132,7 @@ public class Console implements Closeable {
      * @param milliSeconds
      */
     public void setRefreshTime(long milliSeconds) {
-        assert refreshTime>=0:"refreshTime is less than 0";
+        assert refreshTime >= 0 : "refreshTime is less than 0";
         refreshTime = milliSeconds;
     }
 
@@ -140,31 +142,35 @@ public class Console implements Closeable {
      * @param object
      */
     public void print(Object object) {
-        assert consoleText!=null:"consoleText is null";
+        assert consoleText != null : "consoleText is null";
         addToConsole(object.toString());
     }
+
     /**
      * Adds a string to the console
+     * 
      * @param string
      */
     private void addToConsole(String string) {
-        assert string != null:"string is null";
-        assert consoleText!=null:"consoleText is null";
-        consoleText=consoleText+string;
+        assert string != null : "string is null";
+        assert consoleText != null : "consoleText is null";
+        consoleText = consoleText + string;
     }
 
     /**
      * prints a new line
      */
     public void newLine() {
-        assert consoleText!=null:"consoleText is null";
+        assert consoleText != null : "consoleText is null";
         addToConsole("\n");
     }
+
     /**
      * gets the size of the console window
+     * 
      * @return the size of the console window
      */
-    public Dimension getSize(){
+    public Dimension getSize() {
         assert true;
         return mainWindow.getSize();
     }
@@ -175,7 +181,7 @@ public class Console implements Closeable {
      * @param object
      */
     public void linePrint(Object object) {
-        assert consoleText!=null:"consoleText is null";
+        assert consoleText != null : "consoleText is null";
         addToConsole(object.toString() + "\n");
     }
 
@@ -185,7 +191,7 @@ public class Console implements Closeable {
      * @param limit
      */
     public void setCharLimit(int limit) {
-        assert limit >=0:"limit is less than 0";
+        assert limit >= 0 : "limit is less than 0";
         this.charLimit = limit;
     }
 
@@ -193,13 +199,14 @@ public class Console implements Closeable {
      * Sets the title of the console window
      */
     public void setTitle(String title) {
-        assert title != null:"title is null";
+        assert title != null : "title is null";
         mainWindow.setTitle(title);
 
     }
 
     /**
-     * Prints a formatted string, for more info look at the javaDoc for System.out.printf
+     * Prints a formatted string, for more info look at the javaDoc for
+     * System.out.printf
      * 
      * @param format
      * @param args
@@ -211,7 +218,8 @@ public class Console implements Closeable {
     }
 
     /**
-     * Prints a formatted string, for more info look at the javaDoc for System.out.printf
+     * Prints a formatted string, for more info look at the javaDoc for
+     * System.out.printf
      * 
      * @param loc
      * @param format
@@ -227,7 +235,7 @@ public class Console implements Closeable {
      * Scrolls the console to the end of the text in the print area of the console
      */
     private void scrollToEnd() {
-        assert printArea!=null;
+        assert printArea != null;
         if (printArea.getText().length() > 0) {
             printArea.setCaretPosition(printArea.getText().length());
         }
@@ -235,11 +243,13 @@ public class Console implements Closeable {
 
     /**
      * Gets input from the user
-     * @param giveFeedBack when true, prints the value the user entered to the console
+     * 
+     * @param giveFeedBack when true, prints the value the user entered to the
+     *                     console
      * @return input from the user as a string
      */
     public String getInput(boolean giveFeedBack) {
-        assert userInputArea != null:"userInputArea is null";
+        assert userInputArea != null : "userInputArea is null";
         userInputArea.setEditable(true);
 
         if (!userInputArea.isFocusOwner()) {
@@ -287,8 +297,8 @@ public class Console implements Closeable {
         userInputArea.setText("");
         userInputArea.setEditable(false);
         userInputArea.removeKeyListener(keyListener);
-        if(giveFeedBack){
-            linePrint(input.value);
+        if (giveFeedBack) {
+            linePrint(">>" + input.value + "<<");
         }
         return input.value;
 
@@ -296,7 +306,9 @@ public class Console implements Closeable {
 
     /**
      * gets an integer from the user
-     * @param giveFeedBack when true, prints the value the user entered to the console
+     * 
+     * @param giveFeedBack when true, prints the value the user entered to the
+     *                     console
      * @return returns user input
      */
     public int getIntInput(boolean giveFeedBack) {
@@ -306,29 +318,32 @@ public class Console implements Closeable {
             print("Error: " + answer + " is not an integer, please provide different input...");
             answer = getInput(false);
         }
-        if(giveFeedBack){
-            linePrint(answer);
+        if (giveFeedBack) {
+            linePrint(">>" + answer + "<<");
         }
         return Integer.parseInt(answer);
     }
+
     /**
      * Forces the user to enter Y/y/N/n
-     * @param giveFeedBack when true, prints the value the user entered to the console
+     * 
+     * @param giveFeedBack when true, prints the value the user entered to the
+     *                     console
      * @return true when the user entered Y/y otherwise false
      */
-    public boolean getYesOrNoInput(boolean giveFeedBack){
-        assert userInputArea!=null;
-        String answer= getInput(false);
-        while(!answer.toLowerCase().equals("y")&&!answer.toLowerCase().equals("n")){
-            linePrint("Error: "+answer+" does not match Y/y/N/n. Please provide different input");
-            answer=getInput(false);
+    public boolean getYesOrNoInput(boolean giveFeedBack) {
+        assert userInputArea != null;
+        String answer = getInput(false);
+        while (!answer.toLowerCase().equals("y") && !answer.toLowerCase().equals("n")) {
+            linePrint("Error: " + answer + " does not match Y/y/N/n. Please provide different input");
+            answer = getInput(false);
         }
-        if(giveFeedBack){
-            linePrint(answer);
+        if (giveFeedBack) {
+            linePrint(">>" + answer + "<<");
         }
-        if(answer.toLowerCase().equals("y")){
+        if (answer.toLowerCase().equals("y")) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
@@ -346,8 +361,8 @@ public class Console implements Closeable {
             print("Error: " + answer + " is not a double, please provide different input...");
             answer = getInput(false);
         }
-        if(giveFeedBack){
-            linePrint(answer);
+        if (giveFeedBack) {
+            linePrint(">>" + answer + "<<");
         }
         return Double.parseDouble(answer);
 
@@ -358,7 +373,7 @@ public class Console implements Closeable {
      */
     public void clear() {
         assert userInputArea != null;
-        consoleText="";
+        consoleText = "";
         userInputArea.setText("");
     }
 
@@ -367,7 +382,7 @@ public class Console implements Closeable {
      * milliseconds
      */
     private void updateCycle() {
-        assert consoleText!=null;
+        assert consoleText != null;
         assert printArea != null;
         assert userInputArea != null;
 
@@ -387,6 +402,7 @@ public class Console implements Closeable {
         Thread updateThread = new Thread(runnable);
         updateThread.start();
     }
+
     /**
      * Stops the program until a key is pressed
      */
@@ -394,8 +410,12 @@ public class Console implements Closeable {
         final BooleanObject keyPressed = new BooleanObject();
         keyPressed.value = false;
         KeyListener keyListener = new KeyListener() {
-            public void keyTyped(KeyEvent e) {}
-            public void keyReleased(KeyEvent e) {}
+            public void keyTyped(KeyEvent e) {
+            }
+
+            public void keyReleased(KeyEvent e) {
+            }
+
             public void keyPressed(KeyEvent e) {
                 keyPressed.value = true;
             }
@@ -411,37 +431,42 @@ public class Console implements Closeable {
         printArea.removeKeyListener(keyListener);
         userInputArea.removeKeyListener(keyListener);
     }
+
     /**
-     * Displays message, stops the program untill a key is pressed, deletes the message.
+     * Displays message, stops the program untill a key is pressed, deletes the
+     * message.
+     * 
      * @param message
      */
-    public void waitForKeyPress(Object message){
-        assert printArea!=null:"printArea is null";
-        assert userInputArea!=null:"userInputArea is null";
+    public void waitForKeyPress(Object message) {
+        assert printArea != null : "printArea is null";
+        assert userInputArea != null : "userInputArea is null";
         print(message.toString());
         newLine();
         waitForKeyPress();
-        delete(consoleText.length()-message.toString().length()-1, consoleText.length()-1);
+        delete(consoleText.length() - message.toString().length() - 1, consoleText.length() - 1);
     }
+
     /**
      * Deletes characters from the console
+     * 
      * @param beginIndex the begin index in the text
-     * @param endIndex the end index in the text
+     * @param endIndex   the end index in the text
      */
-    public void delete(int beginIndex, int endIndex){
-        assert beginIndex >=0&&beginIndex<consoleText.length():"beginIndex out of bounds";
-        assert endIndex >=0&&endIndex<consoleText.length():"endIndex out of bounds";
-        assert beginIndex<=endIndex:"beginIndex is bigger than endINdex";
-        consoleText=consoleText.substring(0, beginIndex)+consoleText.substring(endIndex, consoleText.length()-1);
+    public void delete(int beginIndex, int endIndex) {
+        assert beginIndex >= 0 && beginIndex < consoleText.length() : "beginIndex out of bounds";
+        assert endIndex >= 0 && endIndex < consoleText.length() : "endIndex out of bounds";
+        assert beginIndex <= endIndex : "beginIndex is bigger than endINdex";
+        consoleText = consoleText.substring(0, beginIndex) + consoleText.substring(endIndex, consoleText.length() - 1);
     }
-    
+
     /**
      * Closes the console
      */
     public void close() {
-        assert mainWindow!=null;
-        updateThreadRunning=false;
+        assert mainWindow != null;
+        updateThreadRunning = false;
         mainWindow.dispose();
-	}
+    }
 
 }
