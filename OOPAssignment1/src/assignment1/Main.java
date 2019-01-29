@@ -15,6 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
         console.setSize(800, 400);
+        console.setRefreshTime(50);
         Student[] students = promptStudents();
         printStudents(students);
         maintainGroup(students);

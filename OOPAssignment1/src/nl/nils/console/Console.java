@@ -3,6 +3,9 @@ package nl.nils.console;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.TextArea;
+import java.awt.TextField;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -11,11 +14,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.Closeable;
 import java.util.Locale;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import nl.nils.utilities.BooleanObject;
 import nl.nils.utilities.StringObject;
@@ -26,9 +24,9 @@ public class Console implements Closeable {
      * A console UI
      * @author Nils Golembiewski
      */
-    private final JFrame mainWindow;
-    private volatile JTextArea printArea;
-    private volatile JTextField userInputArea;
+    private volatile Frame mainWindow;
+    private volatile TextArea printArea;
+    private volatile TextField userInputArea;
     private volatile long refreshTime = 50;
     private volatile int charLimit = 250000;
     private volatile String consoleText = "";
@@ -43,9 +41,9 @@ public class Console implements Closeable {
      */
     public Console() {
         assert true;
-        mainWindow = new JFrame();
-        printArea = new JTextArea();
-        userInputArea = new JTextField();
+        mainWindow = new Frame();
+        printArea = new TextArea();
+        userInputArea = new TextField();
         initializeWindow();
         updateCycle();
     }
@@ -65,9 +63,10 @@ public class Console implements Closeable {
             }
         });
         printArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(printArea);
+        //JScrollPane scrollPane = new JScrollPane(printArea);
         printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
-        mainWindow.add(scrollPane, BorderLayout.CENTER);
+        //mainWindow.add(scrollPane, BorderLayout.CENTER);
+        mainWindow.add(printArea, BorderLayout.CENTER);
         userInputArea.setEditable(false);
         userInputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         userInputArea.setPreferredSize(new Dimension(mainWindow.getSize().width, 20));
@@ -243,6 +242,8 @@ public class Console implements Closeable {
             printArea.setCaretPosition(printArea.getText().length());
         }
     }
+
+    
 
     /**
      * Gets input from the user
