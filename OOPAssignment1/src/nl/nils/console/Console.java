@@ -3,9 +3,6 @@ package nl.nils.console;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
-import java.awt.TextArea;
-import java.awt.TextField;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -15,24 +12,29 @@ import java.awt.event.WindowEvent;
 import java.io.Closeable;
 import java.util.Locale;
 
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import nl.nils.utilities.BooleanObject;
-import nl.nils.utilities.StringObject;
 import nl.nils.utilities.Utilities;
 
 public class Console implements Closeable {
     /**
      * A console UI
+     * 
      * @author Nils Golembiewski
      */
-    private volatile Frame mainWindow;
-    private volatile TextArea printArea;
-    private volatile TextField userInputArea;
+    private volatile JFrame mainWindow;
+    private volatile JTextArea printArea;
+    private volatile JTextField userInputArea;
     private volatile long refreshTime = 50;
     private volatile int charLimit = 250000;
     private volatile String consoleText = "";
     private volatile boolean updateThreadRunning = true;
-    private String feedbackIndicatorFront = ">>";
-    private String feedbackIndicatorBack = "";
+    private volatile String feedbackIndicatorFront = ">>";
+    private volatile String feedbackIndicatorBack = "";
 
     /**
      * A more customizable console to use with console programs.
@@ -41,9 +43,9 @@ public class Console implements Closeable {
      */
     public Console() {
         assert true;
-        mainWindow = new Frame();
-        printArea = new TextArea();
-        userInputArea = new TextField();
+        mainWindow = new JFrame();
+        printArea = new JTextArea();
+        userInputArea = new JTextField();
         initializeWindow();
         updateCycle();
     }
@@ -63,10 +65,10 @@ public class Console implements Closeable {
             }
         });
         printArea.setEditable(false);
-        //JScrollPane scrollPane = new JScrollPane(printArea);
+        JScrollPane scrollPane = new JScrollPane(printArea);
         printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
-        //mainWindow.add(scrollPane, BorderLayout.CENTER);
-        mainWindow.add(printArea, BorderLayout.CENTER);
+        mainWindow.add(scrollPane, BorderLayout.CENTER);
+        // mainWindow.add(printArea, BorderLayout.CENTER);
         userInputArea.setEditable(false);
         userInputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         userInputArea.setPreferredSize(new Dimension(mainWindow.getSize().width, 20));
@@ -243,8 +245,6 @@ public class Console implements Closeable {
         }
     }
 
-    
-
     /**
      * Gets input from the user
      * 
@@ -273,7 +273,8 @@ public class Console implements Closeable {
 
         userInputArea.addFocusListener(focusListener);
 
-        final StringObject input = new StringObject();
+        final BooleanObject booleanObject = new BooleanObject();
+        booleanObject.value = false;
         KeyListener keyListener = new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
@@ -286,25 +287,24 @@ public class Console implements Closeable {
 
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    input.value = userInputArea.getText();
+                    booleanObject.value = true;
                 }
             }
         };
         userInputArea.addKeyListener(keyListener);
-        while (input.value == null) {
-            try {
-                Thread.sleep(refreshTime);
-            } catch (InterruptedException e) {
-            }
+        while (!booleanObject.value) {
+            Utilities.sleep(refreshTime);
         }
+        String answer = userInputArea.getText();
         userInputArea.removeFocusListener(focusListener);
         userInputArea.setText("");
         userInputArea.setEditable(false);
+        Utilities.sleep(refreshTime);
         userInputArea.removeKeyListener(keyListener);
         if (giveFeedBack) {
-            linePrint(feedbackString(input.value));
+            linePrint(feedbackString(answer));
         }
-        return input.value;
+        return answer;
 
     }
 
@@ -395,10 +395,7 @@ public class Console implements Closeable {
             public void run() {
                 while (updateThreadRunning) {
                     updateConsole();
-                    try {
-                        Thread.sleep(refreshTime);
-                    } catch (InterruptedException e) {
-                    }
+                    Utilities.sleep(refreshTime);
                 }
             }
         };
@@ -427,10 +424,7 @@ public class Console implements Closeable {
         printArea.addKeyListener(keyListener);
         userInputArea.addKeyListener(keyListener);
         while (!keyPressed.value) {
-            try {
-                Thread.sleep(refreshTime);
-            } catch (InterruptedException e) {
-            }
+            Utilities.sleep(refreshTime);
         }
         printArea.removeKeyListener(keyListener);
         userInputArea.removeKeyListener(keyListener);
@@ -445,8 +439,7 @@ public class Console implements Closeable {
     public void waitForKeyPress(Object message) {
         assert printArea != null : "printArea is null";
         assert userInputArea != null : "userInputArea is null";
-        print(message.toString());
-        newLine();
+        linePrint(message.toString());
         waitForKeyPress();
         delete(consoleText.length() - message.toString().length() - 1, consoleText.length() - 1);
     }
@@ -459,10 +452,12 @@ public class Console implements Closeable {
      */
     private String feedbackString(String feedback) {
         assert feedback != null;
-        return feedbackIndicatorFront+feedback+feedbackIndicatorBack;
+        return feedbackIndicatorFront + feedback + feedbackIndicatorBack;
     }
+
     /**
      * Sets the string with which the user feedback is indicated default is ">>"
+     * 
      * @param feedbackIndicator
      */
     public void setFeedbackIndicator(String feedbackIndicator) {
@@ -472,13 +467,14 @@ public class Console implements Closeable {
 
     /**
      * Sets the string with which the user feedback is indicated default is ">>", ""
+     * 
      * @param feedbackIndicatorFront
      * @param feedbackIndicatorBack
      */
     public void setFeedbackIndicator(String feedbackIndicatorFront, String feedbackIndicatorBack) {
         assert feedbackIndicatorFront != null;
         this.feedbackIndicatorFront = feedbackIndicatorFront;
-        this.feedbackIndicatorBack=feedbackIndicatorBack;
+        this.feedbackIndicatorBack = feedbackIndicatorBack;
     }
 
     /**

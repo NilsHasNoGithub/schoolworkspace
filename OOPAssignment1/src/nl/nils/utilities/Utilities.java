@@ -21,6 +21,17 @@ public class Utilities {
     }
 
     /**
+     * Sleeps the thread for millis milliseconds
+     * @param millis
+     */
+    public static void sleep(long millis){
+        assert millis >=0;
+        try{
+            Thread.sleep(millis);
+        }catch(InterruptedException e){}
+    }
+
+    /**
      * Returns whether a string is a double
      * 
      * @param string
