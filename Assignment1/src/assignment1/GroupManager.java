@@ -1,6 +1,7 @@
 package assignment1;
 
 import static assignment1.Main.*;
+import assignment1.Student.*;
 import java.util.Scanner;
 import nl.nils.console.Console;
 import nl.nils.utilities.Utilities;

@@ -2,6 +2,7 @@ package assignment1;
 
 
 import nl.nils.console.Console;
+import assignment1.Student.*;
 import static assignment1.GroupManager.*;
 
 /**
