@@ -1,5 +1,4 @@
 from Student import Student
-
 '''
 author: Nils Golembiewski
 '''
