@@ -1,8 +1,7 @@
 package assignment1;
 
-import static assignment1.Main.*;
-import assignment1.Student.*;
 import java.util.Scanner;
+
 import nl.nils.console.Console;
 import nl.nils.utilities.Utilities;
 
@@ -91,7 +90,12 @@ public class GroupManager {
 
     private static boolean correctStudentInput(String studentString, boolean initialization) {
         try (Scanner scanner = new Scanner(studentString)) {
-            String studentNumberString = scanner.next();
+            String studentNumberString;
+            if (scanner.hasNext()) {
+                studentNumberString = scanner.next();
+            } else {
+                return false;
+            }
             if (!Utilities.isInteger(studentNumberString)
                     || (initialization && Integer.parseInt(studentNumberString) < 0)) {
                 return false;
@@ -102,7 +106,6 @@ public class GroupManager {
                     if (scanner.hasNext()) {
                         scanner.next();
                     } else {
-                        scanner.close();
                         return false;
                     }
                 }
