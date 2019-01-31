@@ -11,7 +11,12 @@ import nl.nils.utilities.Utilities;
  */
 public class GroupManager {
 
-    public static void maintainGroup(Student[] students, Console console) {
+    public static void manage(Console console){
+        Student[] students = promptStudents(console);
+        maintainGroup(students, console);
+    }
+
+    private static void maintainGroup(Student[] students, Console console) {
         int inputNr;
         do {
             printStudents(students, console);
@@ -65,7 +70,7 @@ public class GroupManager {
         }
     }
 
-    public static Student[] promptStudents(Console console) {
+    private static Student[] promptStudents(Console console) {
         Student[] students = new Student[promptGroupSize(console)];
         for (int i = 0; i < students.length; i++) {
             students[i] = promptStudent(console);
