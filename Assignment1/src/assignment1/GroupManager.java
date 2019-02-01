@@ -6,27 +6,20 @@ import nl.nils.console.Console;
 import nl.nils.utilities.Utilities;
 
 /**
- * @author Nils Golembiewski (s1019649)
- * 
+ *
+ * @author nils
  */
+public class GroupManager {
 
-public class Main {
-    private static final Console console = new Console();
-
-    public static void main(String[] args) {
-        console.setSize(800, 400);
-        console.setRefreshTime(50);
-        Student[] students = promptStudents();
-        printStudents(students);
-        maintainGroup(students);
-        console.linePrint("Bye!");
-        console.waitForKeyPress("Press any key to exit...");
-        console.close();
+    public static void manage(Console console){
+        Student[] students = promptStudents(console);
+        maintainGroup(students, console);
     }
 
-    private static void maintainGroup(Student[] students) {
+    private static void maintainGroup(Student[] students, Console console) {
         int inputNr;
         do {
+            printStudents(students, console);
             console.linePrint("Student number and new name?");
             String input = console.getInput(true);
             while (!correctStudentInput(input, false)) {
@@ -34,22 +27,24 @@ public class Main {
                         "Invalid input, please use the following format: \"<student_number> <first_name> <last_name>\"\nTo quit type a negative number\nTry again");
                 input = console.getInput(true);
             }
-            Scanner scanner = new Scanner(input);
-            inputNr = scanner.nextInt();
-            scanner.close();
+            try (Scanner scanner = new Scanner(input)) {
+                inputNr = scanner.nextInt();
+            }
             if (inputNr >= 0) {
-                changeStudent(students, input);
-                printStudents(students);
+                changeStudent(students, input, console);
             }
         } while (inputNr >= 0);
     }
 
-    private static void changeStudent(Student[] students, String studentString) {
-        Scanner scanner = new Scanner(studentString);
-        int studentNr = scanner.nextInt();
-        String firstName = scanner.next();
-        String familyName = scanner.next();
-        scanner.close();
+    private static void changeStudent(Student[] students, String studentString, Console console) {
+        int studentNr;
+        String firstName;
+        String familyName;
+        try (Scanner scanner = new Scanner(studentString)) {
+            studentNr = scanner.nextInt();
+            firstName = scanner.next();
+            familyName = scanner.next();
+        }
         int index = findStudent(students, studentNr);
         if (index == students.length) {
             console.linePrint("Student s" + studentNr + " not found, no changes were made.");
@@ -68,22 +63,22 @@ public class Main {
         return students.length;
     }
 
-    private static void printStudents(Student[] students) {
+    private static void printStudents(Student[] students, Console console) {
         console.linePrint("The group now contains:");
-        for (int i = 0; i < students.length; i++) {
-            console.linePrint(students[i].toString());
+        for (Student student : students) {
+            console.linePrint(student.toString());
         }
     }
 
-    public static Student[] promptStudents() {
-        Student[] students = new Student[promptGroupSize()];
+    private static Student[] promptStudents(Console console) {
+        Student[] students = new Student[promptGroupSize(console)];
         for (int i = 0; i < students.length; i++) {
-            students[i] = promptStudent();
+            students[i] = promptStudent(console);
         }
         return students;
     }
 
-    private static Student promptStudent() {
+    private static Student promptStudent(Console console) {
         console.linePrint("Please enter information of the next student.");
         String input = console.getInput(true);
         while (!correctStudentInput(input, true)) {
@@ -91,42 +86,44 @@ public class Main {
                     "Invalid input, please use the following format: \"<student_number> <first_name> <last_name>\"\nTry again");
             input = console.getInput(true);
         }
-        Scanner scanner = new Scanner(input);
-        Student returnStudent = new Student(scanner.nextInt(), scanner.next(), scanner.next());
-        scanner.close();
+        Student returnStudent;
+        try (Scanner scanner = new Scanner(input)) {
+            returnStudent = new Student(scanner.nextInt(), scanner.next(), scanner.next());
+        }
         return returnStudent;
     }
 
     private static boolean correctStudentInput(String studentString, boolean initialization) {
-        Scanner scanner = new Scanner(studentString);
-        String studentNumberString = scanner.next();
-        if (!Utilities.isInteger(studentNumberString)
-                || (initialization && Integer.parseInt(studentNumberString) < 0)) {
-            scanner.close();
-            return false;
-        }
-        if (Integer.parseInt(studentNumberString) >= 0) {
+        try (Scanner scanner = new Scanner(studentString)) {
+            String studentNumberString;
+            if (scanner.hasNext()) {
+                studentNumberString = scanner.next();
+            } else {
+                return false;
+            }
+            if (!Utilities.isInteger(studentNumberString)
+                    || (initialization && Integer.parseInt(studentNumberString) < 0)) {
+                return false;
+            }
+            if (Integer.parseInt(studentNumberString) >= 0) {
 
-            for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 2; i++) {
+                    if (scanner.hasNext()) {
+                        scanner.next();
+                    } else {
+                        return false;
+                    }
+                }
+
                 if (scanner.hasNext()) {
-                    scanner.next();
-                } else {
-                    scanner.close();
                     return false;
                 }
             }
-
-            if (scanner.hasNext()) {
-                scanner.close();
-                return false;
-            }
+            return true;
         }
-
-        scanner.close();
-        return true;
     }
 
-    private static int promptGroupSize() {
+    private static int promptGroupSize(Console console) {
         console.linePrint("Please enter the group size. (Bottom of window)");
         int size = console.getIntInput(true);
         while (size <= 0) {
@@ -135,4 +132,5 @@ public class Main {
         }
         return size;
     }
+
 }

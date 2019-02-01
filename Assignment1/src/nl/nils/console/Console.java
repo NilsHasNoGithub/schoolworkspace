@@ -21,9 +21,10 @@ import nl.nils.utilities.BooleanObject;
 import nl.nils.utilities.Utilities;
 
 public class Console implements Closeable {
+
     /**
      * A console UI
-     * 
+     *
      * @author Nils Golembiewski
      */
     private volatile JFrame mainWindow;
@@ -38,7 +39,7 @@ public class Console implements Closeable {
 
     /**
      * A more customizable console to use with console programs.
-     * 
+     *
      * @author Nils Golembiewski
      */
     public Console() {
@@ -78,7 +79,7 @@ public class Console implements Closeable {
 
     /**
      * sets the size of the console window
-     * 
+     *
      * @param dimension
      */
     public void setSize(Dimension dimension) {
@@ -90,7 +91,7 @@ public class Console implements Closeable {
 
     /**
      * sets the size of the console window
-     * 
+     *
      * @param width
      * @param height
      */
@@ -120,9 +121,9 @@ public class Console implements Closeable {
 
     /**
      * Sets the resizability of the console
-     * 
+     *
      * @param resizable When true, console window will be resizable else it will
-     *                  not. (default: true);
+     * not. (default: true);
      */
     public void setResizable(boolean resizable) {
         assert mainWindow != null : "mainWindow is null";
@@ -132,7 +133,7 @@ public class Console implements Closeable {
     /**
      * Sets the refresh rate at which the console window updates it contents
      * (default: 50)
-     * 
+     *
      * @param milliSeconds
      */
     public void setRefreshTime(long milliSeconds) {
@@ -142,7 +143,7 @@ public class Console implements Closeable {
 
     /**
      * prints an object to the console
-     * 
+     *
      * @param object
      */
     public void print(Object object) {
@@ -152,7 +153,7 @@ public class Console implements Closeable {
 
     /**
      * Adds a string to the console
-     * 
+     *
      * @param string
      */
     private void addToConsole(String string) {
@@ -171,7 +172,7 @@ public class Console implements Closeable {
 
     /**
      * gets the size of the console window
-     * 
+     *
      * @return the size of the console window
      */
     public Dimension getSize() {
@@ -181,7 +182,7 @@ public class Console implements Closeable {
 
     /**
      * prints an object and subsequently a newline to the console
-     * 
+     *
      * @param object
      */
     public void linePrint(Object object) {
@@ -191,7 +192,7 @@ public class Console implements Closeable {
 
     /**
      * Sets the character limit of the console print area (default: 250000)
-     * 
+     *
      * @param limit
      */
     public void setCharLimit(int limit) {
@@ -201,17 +202,18 @@ public class Console implements Closeable {
 
     /**
      * Sets the title of the console window
+     *
+     * @param title
      */
     public void setTitle(String title) {
         assert title != null : "title is null";
         mainWindow.setTitle(title);
-
     }
 
     /**
      * Prints a formatted string, for more info look at the javaDoc for
      * System.out.printf
-     * 
+     *
      * @param format
      * @param args
      */
@@ -224,7 +226,7 @@ public class Console implements Closeable {
     /**
      * Prints a formatted string, for more info look at the javaDoc for
      * System.out.printf
-     * 
+     *
      * @param loc
      * @param format
      * @param args
@@ -236,7 +238,8 @@ public class Console implements Closeable {
     }
 
     /**
-     * Scrolls the console to the end of the text in the print area of the console
+     * Scrolls the console to the end of the text in the print area of the
+     * console
      */
     private void scrollToEnd() {
         assert printArea != null;
@@ -247,9 +250,9 @@ public class Console implements Closeable {
 
     /**
      * Gets input from the user
-     * 
+     *
      * @param giveFeedBack when true, prints the value the user entered to the
-     *                     console
+     * console
      * @return input from the user as a string
      */
     public String getInput(boolean giveFeedBack) {
@@ -261,11 +264,13 @@ public class Console implements Closeable {
         }
 
         FocusListener focusListener = new FocusListener() {
+            @Override
             public void focusGained(FocusEvent e) {
                 userInputArea.setText("");
 
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 userInputArea.setText("Enter input here...");
             }
@@ -277,14 +282,17 @@ public class Console implements Closeable {
         booleanObject.value = false;
         KeyListener keyListener = new KeyListener() {
 
+            @Override
             public void keyTyped(KeyEvent e) {
 
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
 
             }
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     booleanObject.value = true;
@@ -310,9 +318,9 @@ public class Console implements Closeable {
 
     /**
      * gets an integer from the user
-     * 
+     *
      * @param giveFeedBack when true, prints the value the user entered to the
-     *                     console
+     * console
      * @return returns user input
      */
     public int getIntInput(boolean giveFeedBack) {
@@ -330,9 +338,9 @@ public class Console implements Closeable {
 
     /**
      * Forces the user to enter Y/y/N/n
-     * 
+     *
      * @param giveFeedBack when true, prints the value the user entered to the
-     *                     console
+     * console
      * @return true when the user entered Y/y otherwise false
      */
     public boolean getYesOrNoInput(boolean giveFeedBack) {
@@ -345,17 +353,13 @@ public class Console implements Closeable {
         if (giveFeedBack) {
             linePrint(feedbackString(answer));
         }
-        if (answer.toLowerCase().equals("y")) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return answer.toLowerCase().equals("y");
     }
 
     /**
      * Gets a double from the user
-     * 
+     *
+     * @param giveFeedBack
      * @return returns user input
      */
     public double getDoubleInput(boolean giveFeedBack) {
@@ -369,7 +373,6 @@ public class Console implements Closeable {
             linePrint(feedbackString(answer));
         }
         return Double.parseDouble(answer);
-
     }
 
     /**
@@ -390,13 +393,10 @@ public class Console implements Closeable {
         assert printArea != null;
         assert userInputArea != null;
 
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                while (updateThreadRunning) {
-                    updateConsole();
-                    Utilities.sleep(refreshTime);
-                }
+        Runnable runnable = () -> {
+            while (updateThreadRunning) {
+                updateConsole();
+                Utilities.sleep(refreshTime);
             }
         };
 
@@ -411,12 +411,15 @@ public class Console implements Closeable {
         final BooleanObject keyPressed = new BooleanObject();
         keyPressed.value = false;
         KeyListener keyListener = new KeyListener() {
+            @Override
             public void keyTyped(KeyEvent e) {
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
-
+            
+            @Override
             public void keyPressed(KeyEvent e) {
                 keyPressed.value = true;
             }
@@ -433,7 +436,7 @@ public class Console implements Closeable {
     /**
      * Displays message, stops the program untill a key is pressed, deletes the
      * message.
-     * 
+     *
      * @param message
      */
     public void waitForKeyPress(Object message) {
@@ -446,7 +449,7 @@ public class Console implements Closeable {
 
     /**
      * converts feedback into a feedback string according to feedbackIndicator
-     * 
+     *
      * @param feedback
      * @return a feedback string for the console
      */
@@ -457,7 +460,7 @@ public class Console implements Closeable {
 
     /**
      * Sets the string with which the user feedback is indicated default is ">>"
-     * 
+     *
      * @param feedbackIndicator
      */
     public void setFeedbackIndicator(String feedbackIndicator) {
@@ -466,8 +469,9 @@ public class Console implements Closeable {
     }
 
     /**
-     * Sets the string with which the user feedback is indicated default is ">>", ""
-     * 
+     * Sets the string with which the user feedback is indicated default is
+     * ">>", ""
+     *
      * @param feedbackIndicatorFront
      * @param feedbackIndicatorBack
      */
@@ -479,9 +483,9 @@ public class Console implements Closeable {
 
     /**
      * Deletes characters from the console
-     * 
+     *
      * @param beginIndex the begin index in the text
-     * @param endIndex   the end index in the text
+     * @param endIndex the end index in the text
      */
     public void delete(int beginIndex, int endIndex) {
         assert beginIndex >= 0 && beginIndex < consoleText.length() : "beginIndex out of bounds";
@@ -493,6 +497,7 @@ public class Console implements Closeable {
     /**
      * Closes the console
      */
+    @Override
     public void close() {
         assert mainWindow != null;
         updateThreadRunning = false;
