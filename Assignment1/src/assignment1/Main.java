@@ -9,15 +9,14 @@ import nl.nils.utilities.Utilities;
  */
 
 public class Main {
-
     public static void main(String[] args) {
         try (Console console = new Console()) {
             console.setSize(800, 400);
             console.setFeedbackIndicator(Utilities.seperationLine(50) + "\n", "\n" + Utilities.seperationLine(50));
-            GroupManager.manage(console);
+            Student[] students=GroupManager.promptStudents(console);
+            GroupManager.maintainGroup(students,console);
             console.linePrint("Bye!");
             console.waitForKeyPress("Press any key to exit...");
         }
     }
-
 }
