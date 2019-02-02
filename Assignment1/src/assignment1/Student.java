@@ -19,15 +19,14 @@ import java.util.Scanner;
     }
 
     public void setName(String name){
-        Scanner scanner = new Scanner(name);
-        this.firstName=scanner.next();
-        this.familyName=scanner.next();
-        scanner.close();
+        try (Scanner scanner = new Scanner(name)) {
+            this.firstName=scanner.next();
+            this.familyName=scanner.next();
+        }
     }
 
+    @Override
     public String toString(){
         return this.firstName + " " + this.familyName + ", s" + this.STUDENT_NR;
     }
-
-
  }
